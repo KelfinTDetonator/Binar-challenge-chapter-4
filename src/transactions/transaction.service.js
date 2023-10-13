@@ -16,6 +16,12 @@ async function createTransaction(sender, recipient, amountInt){
     return transaction
 }
 
+async function getAllTransactions(){
+    const transactions = await tranRepos.findAllTransactions();
+    return transactions
+}
+
 module.exports = {
-    createTransaction
+    createTransaction,
+    getAllTransactions
 }

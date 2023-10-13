@@ -35,6 +35,11 @@ async function createTransaction(sender, recipient, amountInt){
     return transaction;
 }
 
+async function findAllTransactions(){
+    return await prisma.bank_account_transactions.findMany();
+}
+
 module.exports = {
-    createTransaction
+    createTransaction,
+    findAllTransactions
 }

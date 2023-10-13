@@ -13,7 +13,8 @@ router.post('/', async(req, res)=>{
         const recipient = await accRepos.findBankAccById(recipientId)
         
         if(!(sender && recipient)){
-            res.status(404).send(`${sender || recipient} not found!`)
+            const user = (sender) ? "Destination account" : "Source account";
+            res.status(404).send(`${user} not found!`)
         }
         sender.id = parseInt(senderId)
         recipient.id = parseInt(recipientId)
@@ -23,6 +24,23 @@ router.post('/', async(req, res)=>{
 
     } catch (error) {
         res.status(400).send(error.stack)
+    }
+})
+
+router.get('/', async(req, res)=>{
+    try {
+        const transactions = await tranService.getAllTransactions()
+        
+        for (const transaction of transactions) {
+            if(typeof transaction.amount === 'bigint'){
+                transaction.amount = parseInt(transaction.amount)
+                transactions.amount = transaction.amount
+            }
+        }
+        
+        res.status(200).json(transactions)
+    } catch (error) {
+        res.status(400).send(error.message)
     }
 })
 
