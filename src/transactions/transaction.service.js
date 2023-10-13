@@ -1,5 +1,3 @@
-const prisma = require('../../db')
-
 const tranRepos = require('../transactions/transaction.repository')
 
 async function createTransaction(sender, recipient, amountInt){
@@ -21,7 +19,13 @@ async function getAllTransactions(){
     return transactions
 }
 
+async function getTransactionById(id){
+    const transaction = await tranRepos.findTransactionById(id);
+    return transaction
+}
+
 module.exports = {
     createTransaction,
-    getAllTransactions
+    getAllTransactions,
+    getTransactionById
 }

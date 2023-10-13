@@ -39,7 +39,17 @@ async function findAllTransactions(){
     return await prisma.bank_account_transactions.findMany();
 }
 
+async function findTransactionById(id){
+    const transaction = await prisma.bank_account_transactions.findUnique({
+        where:{
+            id: id,
+        }
+    })  
+    return transaction
+}
+
 module.exports = {
     createTransaction,
-    findAllTransactions
+    findAllTransactions,
+    findTransactionById,
 }
