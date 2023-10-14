@@ -52,9 +52,23 @@ async function createUser(reqBody) {
     return userCreated;
 }
 
+async function updateUser(id, reqBody){
+    const { name, email, password, identity_type, identity_number, address } = reqBody;
+    const userUpdate = await prisma.users.update({
+        where:{
+            id: id,
+        },
+        data:{
+            name, email, password, identity_type, identity_number, address
+        }
+    })
+    return userUpdate
+}
+
 module.exports = {
     findUsers,
     findUserById,
     findUserByEmail,
     createUser,
+    updateUser,
 }

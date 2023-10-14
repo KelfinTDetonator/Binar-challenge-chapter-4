@@ -24,10 +24,20 @@ async function getUserById(id){
     return user;
 }
 
+async function updateUserById(id, reqBody){
+    const user = await userRepos.findUserById(id);
+    if (!user) {
+        throw Error("user tidak ditemukan");
+    }
+    
+    return await userRepos.updateUser(id, reqBody)
+}
+
 
 module.exports = {
     registerUser,
     getUsers,
     getUserById,
     registerUser,
+    updateUserById
 }

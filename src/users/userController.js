@@ -32,4 +32,38 @@ router.post('/', async(req, res)=>{
     }
 })
 
+router.put('/:id', async(req, res)=>{
+    try {
+        const userId = +req.params.id
+        const { name, email, password, identity_type, identity_number, address } = req.body;
+
+        if(!(name, email, password, identity_type, identity_number, address)){
+            res.status(400).send("Some fields are missing")
+            return;
+        }
+
+        const updateUser = await userService.updateUserById(userId, req.body);
+        res.send({
+            data: updateUser,
+            message: "Product updated!"
+        })
+
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+})
+
+router.patch('/:id', async(req, res)=>{
+    try {
+        const userId = +req.params.id;
+        const updateUser = await userService.updateUserById(userId, req.body);
+        res.send({
+            data: updateUser,
+            message: "Product updated!"
+        })
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+})
+
 module.exports = router;
