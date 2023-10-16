@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router();
 
+
+
 const userService = require('./user.service');
  
 router.get('/', async(req, res)=>{
@@ -19,16 +21,36 @@ router.get('/:id', async(req, res)=>{
         res.status(200).json(user)
 
     } catch (error) {
+        if(error.statusCode === 404){
+            res.status(404).send(error.message)
+        } else{
+            res.status(400).send(error.message)
+        }
+        
+    }
+})
+
+router.post('/auth/register', async(req, res)=>{
+    try {
+        const user = await userService.registerUser(req.body);
+        res.status(200).send({
+            data: user,
+            message: "User created successfully"
+        })
+        
+    } catch (error) {
         res.status(400).send(error.message)
     }
 })
 
-router.post('/', async(req, res)=>{
+router.post('/auth/login', async(req, res)=>{
     try {
-        const user = await userService.registerUser(req.body);
-        res.status(200).json(user)
-    } catch (error) {
-        res.status(400).send(error.message)
+        const loggedIn = await userService.loginUser(req.body)
+        res.status(200).json(loggedIn)
+    } catch (err) {
+        res.status(403).json({
+            error: "Invalid credential"
+        })
     }
 })
 
@@ -45,7 +67,7 @@ router.put('/:id', async(req, res)=>{
         const updateUser = await userService.updateUserById(userId, req.body);
         res.send({
             data: updateUser,
-            message: "Product updated!"
+            message: "User info updated!"
         })
 
     } catch (error) {
@@ -63,6 +85,14 @@ router.patch('/:id', async(req, res)=>{
         })
     } catch (error) {
         res.status(400).send(error.message)
+    }
+})
+
+router.delete('/:id', async(req, res)=>{
+    try {
+        const userId = +req.params.id;
+    } catch (error) {
+        
     }
 })
 

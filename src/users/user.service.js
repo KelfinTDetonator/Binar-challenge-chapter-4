@@ -1,4 +1,13 @@
-const userRepos = require('./user.repository')
+const { json } = require('express');
+const userRepos = require('./user.repository');
+
+
+class CustomError extends Error {
+    constructor(message, statusCode) {
+     super(message)
+     this.statusCode = statusCode
+    }
+}
 
 async function registerUser(reqBody){
     const email = await userRepos.findUserByEmail(reqBody.email);
@@ -19,25 +28,30 @@ async function getUsers(){
 async function getUserById(id){
     const user = await userRepos.findUserById(id);
     if (!user) {
-        throw Error("user tidak ditemukan");
+        throw new CustomError('User tidak ditemukan', 404)
     }
     return user;
 }
 
 async function updateUserById(id, reqBody){
-    const user = await userRepos.findUserById(id);
-    if (!user) {
-        throw Error("user tidak ditemukan");
-    }
+    await getUserById(id) //check if user exist
     
     return await userRepos.updateUser(id, reqBody)
 }
 
+async function loginUser(reqBody){
+    const {email, password} = reqBody
+    const findUser = userRepos.findUserByEmail(email)
+    if(!findUser){
+        return 
+    }
+}
 
 module.exports = {
     registerUser,
     getUsers,
     getUserById,
     registerUser,
-    updateUserById
+    updateUserById,
+    loginUser
 }

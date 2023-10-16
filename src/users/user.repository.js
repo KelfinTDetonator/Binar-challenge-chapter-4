@@ -1,4 +1,12 @@
 const prisma = require('../../db')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+const cryptPassword = async(password)=>{
+    const salt = await bcrypt.genSalt(5);
+
+    return bcrypt.hash(password, salt)
+}
 
 async function findUsers() {
     const users = prisma.users.findMany();
@@ -29,7 +37,7 @@ async function createUser(reqBody) {
         data: {
             name,
             email,
-            password,
+            password: await cryptPassword(password),
             profile: {
                 create: {
                     identity_type,
@@ -59,10 +67,51 @@ async function updateUser(id, reqBody){
             id: id,
         },
         data:{
-            name, email, password, identity_type, identity_number, address
+            name, email, password, 
+            profile:{
+                update:{
+                    where:{
+                        user_id: id,
+                    },
+                    data:{
+                        identity_type, 
+                        identity_number, 
+                        address
+                    },
+                },
+            },
+        },
+        include:{
+            profile: true
         }
     })
     return userUpdate
+}
+
+const loginUser = async(reqBody) => {
+    const {email, password} = reqBody
+    const user = await findUserByEmail(email)
+
+    if(bcrypt.compareSync(password, findUser.password)){
+        const token = jwt.sign({id: findUser.id}, 'secret key',
+        { expiresIn: '6h'})
+
+        return token
+    }    
+}
+
+async function deleteUser(id, reqBody){
+
+}
+
+async function getUser(id){
+    const user = await prisma.users.findUnique({
+        where:{
+            id
+        }
+    })
+
+    return user
 }
 
 module.exports = {
@@ -71,4 +120,5 @@ module.exports = {
     findUserByEmail,
     createUser,
     updateUser,
+    loginUser,
 }
