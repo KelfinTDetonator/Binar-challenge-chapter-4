@@ -100,19 +100,20 @@ const loginUser = async(reqBody) => {
     }    
 }
 
-async function deleteUser(id, reqBody){
-
-}
-
-async function getUser(id){
-    const user = await prisma.users.findUnique({
+async function deleteUserProfile(id){
+    const deleteProfile = await prisma.profiles.delete({
         where:{
-            id
+            id,
         }
     })
-
-    return user
+    const deleteUser = await prisma.users.delete({
+        where:{
+            id,
+        }
+    })
+    return await prisma.$transaction([deleteProfile, deleteUser])
 }
+
 
 module.exports = {
     findUsers,
@@ -120,5 +121,6 @@ module.exports = {
     findUserByEmail,
     createUser,
     updateUser,
+    deleteUserProfile,
     loginUser,
 }

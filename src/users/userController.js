@@ -1,8 +1,6 @@
 const express = require('express')
 const router = express.Router();
 
-
-
 const userService = require('./user.service');
  
 router.get('/', async(req, res)=>{
@@ -14,7 +12,7 @@ router.get('/:id', async(req, res)=>{
     try {
         const userId = +req.params.id
         if(typeof userId !== 'number'){
-            throw Error("ID harus berupa angka!")
+            res.status(400).send("ID must be a number"); return;
         }
         const user = await userService.getUserById(userId)
 
@@ -91,8 +89,12 @@ router.patch('/:id', async(req, res)=>{
 router.delete('/:id', async(req, res)=>{
     try {
         const userId = +req.params.id;
+        await userService.deleteUserById(userId)
+        res.status(200).send({
+            message: "User & Profile has deleted"
+        })
     } catch (error) {
-        
+        res.status(400).send(error.message)
     }
 })
 

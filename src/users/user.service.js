@@ -39,6 +39,12 @@ async function updateUserById(id, reqBody){
     return await userRepos.updateUser(id, reqBody)
 }
 
+async function deleteUserById(id){
+    await getUserById(id); //check if user exist
+    const deleted = await userRepos.deleteUserProfile(id);
+    return deleted
+}
+
 async function loginUser(reqBody){
     const {email, password} = reqBody
     const findUser = userRepos.findUserByEmail(email)
@@ -53,5 +59,6 @@ module.exports = {
     getUserById,
     registerUser,
     updateUserById,
-    loginUser
+    deleteUserById,
+    loginUser,
 }
