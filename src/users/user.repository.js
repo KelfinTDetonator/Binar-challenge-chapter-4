@@ -92,8 +92,8 @@ const loginUser = async(reqBody) => {
     const {email, password} = reqBody
     const user = await findUserByEmail(email)
 
-    if(bcrypt.compareSync(password, findUser.password)){
-        const token = jwt.sign({id: findUser.id}, 'secret key',
+    if(bcrypt.compareSync(password, user.password)){
+        const token = jwt.sign({id: user.id}, 'secret key',
         { expiresIn: '6h'})
 
         return token

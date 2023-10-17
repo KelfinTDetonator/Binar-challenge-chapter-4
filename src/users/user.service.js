@@ -13,7 +13,7 @@ async function registerUser(reqBody){
     const email = await userRepos.findUserByEmail(reqBody.email);
     //validasi user yang sama
     if (email) {
-        throw Error("user is exist, check your account");
+        throw Error("user is exist, login with your account instead");
     }
     //if not exist, then
     const user = await userRepos.createUser(reqBody);
@@ -28,7 +28,7 @@ async function getUsers(){
 async function getUserById(id){
     const user = await userRepos.findUserById(id);
     if (!user) {
-        throw new CustomError('User tidak ditemukan', 404)
+        throw new CustomError('User not found', 404)
     }
     return user;
 }
