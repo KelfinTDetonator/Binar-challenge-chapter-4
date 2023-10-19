@@ -5,8 +5,11 @@ const accService = require('./account.service')
 
 router.post('/', async(req, res)=>{
     try {
-        const accounts = await accService.createAccount(req.body)
-        res.status(201).json(accounts)
+        const account = await accService.createAccount(req.body)
+        res.status(201).json({
+            data: account,
+            message: "Account created successfully"
+        })
     } catch (error) {
         res.status(400).send(error.code)
     }
@@ -23,13 +26,44 @@ router.get('/', async(req, res)=>{
 
 router.get('/:id', async(req, res)=>{
     try {
-        let accId = +req.params.id
+        let accId = +req.params.id;
+        if(typeof accId !== 'number'){
+            throw Error('Account ID must be a number')
+        }
         const account = await accService.getAccountById(accId)
             if(account){
-                res.status(200).json(account)
+                res.status(200).json({
+                    data: account,
+                    message: "Fetch account data success"
+                })
             }
     } catch (error) {
         res.status(400).send(error.message)
+    }
+})
+
+router.delete('/:id', async(req, res) => {
+    try {
+        const accId = +req.params.id;
+        let {bank_account_number, user_id} = req.body;
+        parseInt(user_id)
+        if(typeof user_id !== 'number'){
+            throw Error('Account ID must be a number')
+        }
+        await accService.deleteAccount(accId, user_id, bank_account_number);
+        
+        res.status(200).json({
+            message: "Account deleted"
+        })
+    } catch (err) {   
+        if(err.statusCode){
+            res.status(err.statusCode).send(err.message);
+            return;
+        }
+        res.status(400).send(err.message);   
+        
+       
+        
     }
 })
 

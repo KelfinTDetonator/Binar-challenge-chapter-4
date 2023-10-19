@@ -48,8 +48,18 @@ async function findTransactionById(id){
     return transaction
 }
 
+async function deleteTransactionById(id){
+    const transaction = await prisma.bank_account_transactions.delete({
+        where:{
+            id
+        }
+    })
+    return transaction
+}
+
 module.exports = {
     createTransaction,
     findAllTransactions,
     findTransactionById,
+    deleteTransactionById
 }

@@ -1,8 +1,14 @@
 const accRepos = require('./account.repository');
 const userRepos = require('../users/user.repository');
 
-const convertToInt = (prop) => parseInt(prop.balance)
+const convertToInt = (prop) => parseInt(prop.balance);
 
+class CustomError extends Error {
+    constructor(message, statusCode) {
+     super(message)
+     this.statusCode = statusCode
+    }
+}
 async function createAccount(reqBody) {
     let { user_id } = reqBody;
     user_id = parseInt(user_id);
@@ -26,31 +32,36 @@ async function createAccount(reqBody) {
 }
 
 async function getAccountById(accId){
-    if(typeof accId !== 'number'){
-        throw Error('Account ID must be a number')
-    }
-
     const account = await accRepos.findBankAccById(accId)
     if(!account){
-        throw Error("Account not found")
+        throw new CustomError("Account not found", 404)
     }
     account.balance = convertToInt(account)
     return account;
 }
 
-const getAccounts = async() => {
+async function getAccounts() {
     const accounts = await accRepos.findAccounts();
 
     for (const iterator of accounts) {
-        iterator.balance = convertToInt(iterator)
-        accounts.balance = iterator.balance //input balik ke tiap object accounts
+        iterator.balance = convertToInt(iterator);
+        accounts.balance = iterator.balance; //input balik ke tiap object accounts
     };
-    
-    return accounts
+
+    return accounts;
 }
 
+async function deleteAccount(id, user_id, bank_account_number){
+    const user = await getAccountById(parseInt(user_id));
+    const deleteAcc = await accRepos.deleteAccount(id , user_id, bank_account_number);
+    if(!deleteAcc){
+        throw new CustomError("Internal server error", 500);
+    }
+    return deleteAcc;
+}
 module.exports = {
     createAccount,
     getAccountById,
     getAccounts,
+    deleteAccount
 }

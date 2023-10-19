@@ -28,23 +28,35 @@ async function findBankAccNumber(reqBody){
     return result
 }
 
-async function findBankAccById(accId){
+async function findBankAccById(accId ){
     const result = await prisma.bank_accounts.findUnique({
         where:{
             id: accId,
-        },
-    })
-    
-    return result
+        },    
+    });
+    return result;
 }
 
-const findAccounts = async() => {
-    return await prisma.bank_accounts.findMany();
+async function findAccounts() {
+    return await prisma.bank_accounts.findMany()
 }
 
+async function deleteAccount(id, user_id, bank_account_number) {
+    const acc = await prisma.bank_accounts.delete({
+        where:{
+         id: id,
+         AND:[
+            { bank_account_number: { contains: bank_account_number, }, },
+            { user_id: user_id, },
+         ]
+        }
+    });
+    return acc;
+}
 module.exports = {
     createUserAcc,
     findBankAccNumber,
     findBankAccById,
     findAccounts,
+    deleteAccount,
 }

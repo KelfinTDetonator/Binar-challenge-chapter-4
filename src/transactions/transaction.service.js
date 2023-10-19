@@ -1,4 +1,11 @@
-const tranRepos = require('../transactions/transaction.repository')
+const tranRepos = require('../transactions/transaction.repository');
+
+class CustomError extends Error {
+    constructor(message, statusCode) {
+     super(message)
+     this.statusCode = statusCode
+    }
+}
 
 async function createTransaction(sender, recipient, amountInt){
     if(typeof sender.id !== 'number' && typeof recipient.id !== 'number'){
@@ -21,11 +28,20 @@ async function getAllTransactions(){
 
 async function getTransactionById(id){
     const transaction = await tranRepos.findTransactionById(id);
+    if(!transaction){
+        throw new CustomError("Transaction not exist", 404);
+    }
     return transaction
+}
+
+async function deleteTransactionById(id){
+    await getTransactionById(id) //check if transaction is exist
+    return await tranRepos.deleteTransactionById(id);
 }
 
 module.exports = {
     createTransaction,
     getAllTransactions,
-    getTransactionById
+    getTransactionById,
+    deleteTransactionById,
 }

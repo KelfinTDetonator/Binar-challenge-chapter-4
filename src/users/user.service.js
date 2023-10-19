@@ -1,7 +1,6 @@
 const { json } = require('express');
 const userRepos = require('./user.repository');
 
-
 class CustomError extends Error {
     constructor(message, statusCode) {
      super(message)

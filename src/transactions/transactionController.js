@@ -23,10 +23,13 @@ router.post('/', async(req, res)=>{
         recipient.id = parseInt(recipientId)
 
         const transaction = await tranService.createTransaction(sender, recipient, amountInt)
-        res.status(200).json(transaction)
+        res.status(201).json({
+            data: transaction,
+            message: "Transaction successful"
+        })
 
     } catch (error) {
-        res.status(400).send(error.stack)
+        res.status(400).send(error.message)
     }
 })
 
@@ -41,7 +44,10 @@ router.get('/', async(req, res)=>{
             }
         }
 
-        res.status(200).json(transactions)
+        res.status(200).json({
+            data: transactions,
+            message: "fetch transactions data success"
+        })
     } catch (error) {
         res.status(400).send(error.message)
     }
@@ -56,9 +62,7 @@ router.get('/:transactionId', async(req, res)=>{
     }
 
     const transaction = await tranService.getTransactionById(transactionId)
-    if(!transaction){
-        res.status(404).send("Transaction not exist")
-    }
+    
     const senderId      = +transaction.source_account_id;
     const destinationId = +transaction.destination_account_id;
 
@@ -79,7 +83,6 @@ router.get('/:transactionId', async(req, res)=>{
     const recipientUser = await userService.getUserById(recipientUserId)
 
     //detail transaction
-
     transaction["source_account_info"] = {
         id: senderUser.id,
         name: senderUser.name,
@@ -91,11 +94,41 @@ router.get('/:transactionId', async(req, res)=>{
     }
 
     transaction.amount = parseInt(transaction.amount)
-    res.status(200).json(transaction)
+    res.status(200).json({
+        data: transaction,
+        message: "Fetch data success"
+    });
+
     } catch (error) {
-        res.status(400).send(error.message)
+        if(error.statusCode === 404) { //not found
+            res.status(404).send(error.message)
+        } else {    //bad syntax
+            res.status(400).send(error.message)
+        }
     }
+})
 
+router.delete('/:transactionId', async(req, res) => {
+    try {
+        const transactionId = +req.params.transactionId;
 
+        if(typeof transactionId !== 'number'){
+            throw Error ("ID must be a number")
+        }
+        
+        const deleteTransaction = await tranService.deleteTransactionById(transactionId);
+
+            res.status(200).json({
+                data: deleteTransaction,
+                message: "Transaction deleted"
+            })
+        
+    } catch (err) {
+        if(err.statusCode === 404) { //not found
+            res.status(404).json( { error: err.message } )
+        } else {    //bad syntax
+            res.status(400).json( { error: err.message } )
+        }
+    }
 })
 module.exports = router
