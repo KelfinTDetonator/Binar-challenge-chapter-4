@@ -4,6 +4,7 @@ const router = express.Router();
 const userService = require('./user.service');
 const checkToken = require('../middleware/checkToken');
 
+//get all users info
 router.get('/', async(req, res)=>{
     const users = await userService.getUsers();
     res.status(200).json(users)
@@ -11,6 +12,7 @@ router.get('/', async(req, res)=>{
 
 
 //TODO: #############
+//register user
 router.post('/auth/register', async(req, res)=>{
     try {
         const user = await userService.registerUser(req.body);
@@ -28,6 +30,7 @@ router.post('/auth/register', async(req, res)=>{
 })
 
 //TODO: #############
+//login user, return token
 router.post('/auth/login', async(req, res)=>{
     try {
         const loggedIn = await userService.loginUser(req.body)
@@ -40,6 +43,8 @@ router.post('/auth/login', async(req, res)=>{
       
     }
 })
+
+//user authenticated
 router.get('/auth/authenticate', checkToken, async(req, res)=>{
     try {
         const userId = +res.user.id
@@ -66,7 +71,7 @@ router.get('/auth/authenticate', checkToken, async(req, res)=>{
     }
 })
 
-
+//update user, profile by id
 router.put('/:id', async(req, res)=>{
     try {
         const userId = +req.params.id
@@ -88,6 +93,7 @@ router.put('/:id', async(req, res)=>{
     }
 })
 
+//patch user and profile by id
 router.patch('/:id', async(req, res)=>{
     try {
         const userId = +req.params.id;
@@ -101,6 +107,7 @@ router.patch('/:id', async(req, res)=>{
     }
 })
 
+//delete user, and profile by id
 router.delete('/:id', async(req, res)=>{
     try {
         const userId = +req.params.id;

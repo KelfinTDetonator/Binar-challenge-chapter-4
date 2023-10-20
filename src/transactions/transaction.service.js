@@ -28,7 +28,7 @@ async function getAllTransactions(){
 
 async function getTransactionById(id){
     const transaction = await tranRepos.findTransactionById(id);
-    if(!transaction){
+    if(!transaction){ //if not exist
         throw new CustomError("Transaction does not exist", 404);
     }
     return transaction

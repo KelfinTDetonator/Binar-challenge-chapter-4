@@ -6,7 +6,7 @@ const checkToken = (req, res, next) =>{
     // console.log(token)
     if(!token){
         return res.status(403).json({
-            error: 'please provide a token'
+            error: 'Please provide a token'
         })
     }
 

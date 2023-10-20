@@ -7,7 +7,7 @@ async function createTransaction(sender, recipient, amountInt){
         },
         data: {
             balance:{
-                decrement: amountInt
+                decrement: amountInt //transfer money to destination account, then decremented by amountInt
             } 
         }
     })
@@ -18,7 +18,7 @@ async function createTransaction(sender, recipient, amountInt){
         },
         data:{
             balance:{
-                increment: amountInt
+                increment: amountInt //receive amountInt money from source account, then incremented
             }
         }
     })
@@ -31,7 +31,7 @@ async function createTransaction(sender, recipient, amountInt){
         }
     })
 
-    await prisma.$transaction([source, destination, transaction])
+    await prisma.$transaction([source, destination, transaction]) 
     return transaction;
 }
 

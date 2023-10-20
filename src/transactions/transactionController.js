@@ -6,6 +6,7 @@ const accRepos = require('../bankAccounts/account.repository')
 const tranService = require('./transaction.service');
 const userService = require('../users/user.service');
 
+//create transaction
 router.post('/', async(req, res)=>{
     try {
         const {source_account_id, destination_account_id, amount } = req.body;
@@ -33,6 +34,7 @@ router.post('/', async(req, res)=>{
     }
 })
 
+//get all transactions info
 router.get('/', async(req, res)=>{
     try {
         const transactions = await tranService.getAllTransactions()
@@ -60,13 +62,13 @@ router.get('/:transactionId', async(req, res)=>{
     if(typeof transactionId !== 'number'){
         throw Error ("ID must be a number")
     }
-
+    //gett transaction info, if not exist then error
     const transaction = await tranService.getTransactionById(transactionId)
     
     const senderId      = +transaction.source_account_id;
     const destinationId = +transaction.destination_account_id;
 
-    //account
+    //account, if not exist then error
     const senderAcc = await accRepos.findBankAccById(senderId);
     const recipientAcc = await accRepos.findBankAccById(destinationId);
 
@@ -75,14 +77,15 @@ router.get('/:transactionId', async(req, res)=>{
         res.status(404).send(`${user} not found!`)
     }
 
-    //user
+    //users id
     const senderUserId = parseInt(senderAcc.user_id)
     const recipientUserId = parseInt(recipientAcc.user_id)
 
+    //getting user (sender, recipient), if nnot exist then error
     const senderUser = await userService.getUserById(senderUserId)
     const recipientUser = await userService.getUserById(recipientUserId)
 
-    //detail transaction
+    //detail transaction connected with sender and recipient account info
     transaction["source_account_info"] = {
         id: senderUser.id,
         name: senderUser.name,
