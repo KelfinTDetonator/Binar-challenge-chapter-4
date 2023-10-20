@@ -19,11 +19,11 @@ async function createAccount(reqBody) {
 
     const user = await userRepos.findUserById(user_id);
     if (!user) {
-        throw new Error("User not exist");
+        throw new CustomError("User not exist", 404);
     }
 
     if (await accRepos.findBankAccNumber(reqBody)) {
-        throw new Error("Account number should be unique");
+        throw new CustomError("Account number should be unique", 403);
     }
 
     const acc = await accRepos.createUserAcc(user_id, reqBody);

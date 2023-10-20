@@ -96,7 +96,7 @@ router.get('/:transactionId', async(req, res)=>{
     transaction.amount = parseInt(transaction.amount)
     res.status(200).json({
         data: transaction,
-        message: "Fetch data success"
+        message: "Fetch transaction data success"
     });
 
     } catch (error) {
@@ -116,10 +116,9 @@ router.delete('/:transactionId', async(req, res) => {
             throw Error ("ID must be a number")
         }
         
-        const deleteTransaction = await tranService.deleteTransactionById(transactionId);
+        await tranService.deleteTransactionById(transactionId);
 
             res.status(200).json({
-                data: deleteTransaction,
                 message: "Transaction deleted"
             })
         

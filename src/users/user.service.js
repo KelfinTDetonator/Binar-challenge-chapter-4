@@ -1,5 +1,13 @@
 const { json } = require('express');
 const userRepos = require('./user.repository');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
+
+const genHashCrypt = async(password)=>{
+    const salt = await bcrypt.genSalt();
+    return bcrypt.hash(password, salt);
+}
 
 class CustomError extends Error {
     constructor(message, statusCode) {
@@ -12,9 +20,10 @@ async function registerUser(reqBody){
     const email = await userRepos.findUserByEmail(reqBody.email);
     //validasi user yang sama
     if (email) {
-        throw Error("user is exist, login with your account instead");
+        throw new CustomError("user is exist, login with your account instead", 409);
     }
     //if not exist, then
+    reqBody.password = await genHashCrypt(reqBody.password);
     const user = await userRepos.createUser(reqBody);
     return user;
 }
@@ -46,11 +55,21 @@ async function deleteUserById(id){
 
 async function loginUser(reqBody){
     const {email, password} = reqBody
-    const findUser = userRepos.findUserByEmail(email)
-    if(!findUser){
-        return 
+    const user = await userRepos.findUserByEmail(email)
+    // console.log( user, password)
+    if(!user){
+        throw new CustomError("Email or password may be incorrect", 401)
     }
+    if(bcrypt.compareSync(password, user.password)){
+                                            //if key exist in env     //if not exist
+        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY || 'secret_key', { expiresIn: '6h'});
+        return token;
+    } else{
+        throw new CustomError({ error: "Invalid credential" }, 403)
+    }
+   
 }
+
 
 module.exports = {
     registerUser,

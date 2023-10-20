@@ -1,20 +1,20 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config()
 
 const checkToken = (req, res, next) =>{
     let token = req.headers.authorization
-
+    // console.log(token)
     if(!token){
         return res.status(403).json({
             error: 'please provide a token'
         })
-
     }
 
-    if(token.toLowerCase().startWith('bearer')){
+    if(token.toLowerCase().startsWith('bearer')){
         token = token.slice('bearer'.length).trim()
     }
 
-    const jwtPayLoad = jwt.verify(token, 'secret_key')
+    const jwtPayLoad = jwt.verify(token, process.env.SECRET_KEY || 'secret_key')
 
     if(!jwtPayLoad){
         return res.status(403).json({

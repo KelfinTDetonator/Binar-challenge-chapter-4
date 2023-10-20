@@ -2,21 +2,59 @@ const express = require('express')
 const router = express.Router();
 
 const userService = require('./user.service');
- 
+const checkToken = require('../middleware/checkToken');
+
 router.get('/', async(req, res)=>{
     const users = await userService.getUsers();
     res.status(200).json(users)
 })
 
-router.get('/:id', async(req, res)=>{
+
+//TODO: #############
+router.post('/auth/register', async(req, res)=>{
     try {
-        const userId = +req.params.id
+        const user = await userService.registerUser(req.body);
+        res.status(200).send({
+            data: user,
+            message: "User created successfully"
+        })
+        
+    } catch (err) {
+        if(err.statusCode){
+            res.status(err.statusCode).send(err.message); return;
+        }
+        res.status(400).send(err.message)
+    }
+})
+
+//TODO: #############
+router.post('/auth/login', async(req, res)=>{
+    try {
+        const loggedIn = await userService.loginUser(req.body)
+        console.log(loggedIn)
+        res.status(200).json({
+            data: loggedIn
+        })
+    } catch (err) {
+        res.status(403).send( err.stack )
+      
+    }
+})
+router.get('/auth/authenticate', checkToken, async(req, res)=>{
+    try {
+        const userId = +res.user.id
         if(typeof userId !== 'number'){
             res.status(400).send("ID must be a number"); return;
         }
         const user = await userService.getUserById(userId)
-
-        res.status(200).json(user)
+        //excluding password
+        delete user.password
+        // const keys = "password"
+        // Object.entries(user).filter(([key]) => !keys.includes(key))
+        res.status(200).json({
+            data: user,
+            message: "Fetch user success"
+        })
 
     } catch (error) {
         if(error.statusCode === 404){
@@ -28,29 +66,6 @@ router.get('/:id', async(req, res)=>{
     }
 })
 
-router.post('/auth/register', async(req, res)=>{
-    try {
-        const user = await userService.registerUser(req.body);
-        res.status(200).send({
-            data: user,
-            message: "User created successfully"
-        })
-        
-    } catch (error) {
-        res.status(400).send(error.message)
-    }
-})
-
-router.post('/auth/login', async(req, res)=>{
-    try {
-        const loggedIn = await userService.loginUser(req.body)
-        res.status(200).json(loggedIn)
-    } catch (err) {
-        res.status(403).json({
-            error: "Invalid credential"
-        })
-    }
-})
 
 router.put('/:id', async(req, res)=>{
     try {

@@ -11,7 +11,7 @@ router.post('/', async(req, res)=>{
             message: "Account created successfully"
         })
     } catch (error) {
-        res.status(400).send(error.code)
+        res.status(400).send(error.message)
     }
 })
 
