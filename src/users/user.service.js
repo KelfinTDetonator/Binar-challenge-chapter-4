@@ -30,7 +30,10 @@ async function registerUser(reqBody){
 
 async function getUsers(){
     const users = await userRepos.findUsers();
-    return users;
+    if(!users){
+        throw new CustomError('Internal Server Error', 500)
+    }
+    return users
 }
 
 async function getUserById(id){
@@ -43,7 +46,6 @@ async function getUserById(id){
 
 async function updateUserById(id, reqBody){
     await getUserById(id) //check if user exist
-    
     return await userRepos.updateUser(id, reqBody)
 }
 
