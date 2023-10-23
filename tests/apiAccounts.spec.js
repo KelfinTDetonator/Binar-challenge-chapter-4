@@ -21,7 +21,7 @@ const userController = require('../src/users/userController')
     //           });
     // })
 
-describe("Integration test user controller API", ()=>{
+describe("Integration test transaction controller API", ()=>{
     
     it("GET /accounts/ --> Return status: 200 and all users objects", async()=>{
         const response = await request(app)
@@ -44,11 +44,60 @@ describe("Integration test user controller API", ()=>{
         )
         expect(response.statusCode).toBe(200);
     })
-
-    it("POST /users/auth/register --> return user & profile + statusCode 200", async()=>{
-        const request = await request(app).post('/auth/register')
-                                          .set('Accept', 'application/json') //accept type
-                                          .type('application/json') //content type
-        expect(request.body).
-    })
+  
 })
+
+describe("test", ()=>{
+    it("POST /accounts -- success --> response body contains new account JSON + statusCode 200", async()=>{
+        const payload = {
+            bank_name: "BCA Biasa",
+            bank_account_number: "900082423668",
+            balance: 900000,
+            user_id: 3
+        }
+        const response = await request(app).post('api/v1/accounts').send(payload).set('Accept', 'application/json')
+        .type('application/json')
+                                    
+         console.log(response)                                 
+                                          
+                                          
+        // req.body = {
+        //     "bank_name": "BCA Prioritas",
+        //     "bank_account_number": "900082423446",
+        //     "balance": 900000,
+        //     "id": 7,
+        // }
+        // expect(response.statusCode).toBe(201);
+        expect(response.body).toEqual(
+            expect.objectContaining({
+                data: expect.objectContaining({
+                    id: expect.any(Number),
+                    bank_name: expect.any(String),
+                    bank_account_number: expect.any(String),
+                    balance: expect.any(Number),
+                    user_id: expect.any(Number),
+                }),
+                message: expect.any(String)
+            })
+        )
+
+    })})
+
+
+
+    // it("POST /accounts -- failed --> return error object + error status", async()=>{
+    //     const req = await request(app).post('/auth/register')
+    //                                       .set('Accept', 'application/json') //accept type
+    //                                       .type('application/json') //content type
+    //                                       .send(
+    //                                         {
+    //                                             "bank_name": "",
+    //                                             "bank_account_number": "",
+    //                                             "balance": 0,
+    //                                             "user_id": 0,
+    //                                         })
+    //     // expect(req.body).toEqual({
+    //     //     error: 
+    //     // })
+    // })
+

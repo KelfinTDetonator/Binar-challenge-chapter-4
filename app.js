@@ -1,15 +1,19 @@
 const express = require('express')
 const app = express()
 const routerUser = require('./src/users/userController');
-const routerAccounts = require('./src/bankAccounts/accountController');
+const routerAccounts = require('./src/routes/bankAccount.routes');
 const routerTransactions = require('./src/transactions/transactionController')
 
 const swaggerUi = require('swagger-ui-express')
 const swaggerJson = require('./openApi.json')
+const bodyParser = require('body-parser')
 // const routerAcc = require('./routers/accounts/accountsRouter')
 // const hostname = '127.0.0.1';
 
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 app.use(express.json({strict: false}));
+
 app.use("/api/v1/documentation", swaggerUi.serve, swaggerUi.setup(swaggerJson))
 
 app.use('/api/v1/users', routerUser);

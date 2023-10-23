@@ -1,9 +1,6 @@
-const express = require('express')
-const router = express.Router();
-
 const accService = require('./account.service')
 
-router.post('/', async(req, res)=>{
+async function createAccount(req, res){
     try {
         const account = await accService.createAccount(req.body)
         res.status(201).json({
@@ -13,18 +10,18 @@ router.post('/', async(req, res)=>{
     } catch (error) {
         res.status(400).send(error.message)
     }
-})
+}
 
-router.get('/', async(req, res)=>{
+async function getAllAccounts(req, res){
     try {
         const accounts = await accService.getAccounts();
         res.status(200).json(accounts)
     } catch (error) {
         res.status(500).send(error.message)
     }
-})
+}
 
-router.get('/:id', async(req, res)=>{
+async function getAccountById(req, res){
     try {
         let accId = +req.params.id;
         if(typeof accId !== 'number'){
@@ -40,9 +37,9 @@ router.get('/:id', async(req, res)=>{
     } catch (error) {
         res.status(400).send(error.message)
     }
-})
+}
 
-router.delete('/:id', async(req, res) => {
+async function deleteAccountById(req, res){
     try {
         const accId = +req.params.id;
         let {bank_account_number, user_id} = req.body;
@@ -61,10 +58,12 @@ router.delete('/:id', async(req, res) => {
             return;
         }
         res.status(400).send(err.message);   
-        
-       
-        
     }
-})
+}
 
-module.exports = router
+module.exports = {
+    createAccount,
+    getAllAccounts,
+    getAccountById,
+    deleteAccountById,
+}

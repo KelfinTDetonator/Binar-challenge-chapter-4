@@ -23,7 +23,7 @@ async function createAccount(reqBody) {
     }
 
     if (await accRepos.findBankAccNumber(reqBody)) {
-        throw new CustomError("Account number should be unique", 403);
+        throw new CustomError("Account number should be unique", 401);
     }
 
     const acc = await accRepos.createUserAcc(user_id, reqBody);
