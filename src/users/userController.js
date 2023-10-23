@@ -3,7 +3,6 @@ const router = express.Router();
 
 const userService = require('./user.service');
 
-
 //get all users info
 async function getAllUsers(req, res){
     const users = await userService.getUsers();

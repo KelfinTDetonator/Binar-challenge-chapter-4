@@ -11,3 +11,5 @@ router.get('/auth/authenticate', checkToken, userController.userAuthenticated)
 router.put('/:id', userController.updateUserById)
 router.patch('/:id', userController.patchUserById)
 router.delete('/:id', userController.deleteUserById)
+
+module.exports = router

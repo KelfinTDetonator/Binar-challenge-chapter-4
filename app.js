@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const routerUser = require('./src/users/userController');
+const routerUser = require('./src/routes/users.routes');
 const routerAccounts = require('./src/routes/bankAccount.routes');
 const routerTransactions = require('./src/routes/transaction.routes')
 
