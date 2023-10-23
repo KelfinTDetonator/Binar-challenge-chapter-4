@@ -5,8 +5,15 @@ const userService = require('./user.service');
 
 //get all users info
 async function getAllUsers(req, res){
-    const users = await userService.getUsers();
-    res.status(200).json(users);
+    try {
+        const users = await userService.getUsers();
+        res.status(200).json(users);
+    } catch (err) {
+        if(err.statusCode){
+            res.status(err.statusCode).send(err.message); return;
+        }
+        res.status(400).send(err.message)
+    }
 }
 
 //register user
@@ -56,13 +63,11 @@ async function userAuthenticated(req, res){
             message: "Fetch user success"
         })
 
-    } catch (error) {
-        if(error.statusCode === 404){
-            res.status(404).send(error.message)
-        } else{
-            res.status(400).send(error.message)
+    } catch (err) {
+        if(err.statusCode){
+            res.status(err.statusCode).send(err.message); return;
         }
-        
+        res.status(400).send(err.message)
     }
 }
 
@@ -83,8 +88,11 @@ async function updateUserById(req, res){
             message: "User info updated!"
         })
 
-    } catch (error) {
-        res.status(400).send(error.message)
+    } catch (err) {
+        if(err.statusCode){
+            res.status(err.statusCode).send(err.message); return;
+        }
+        res.status(400).send(err.message)
     }
 }
 
@@ -97,8 +105,11 @@ async function patchUserById(req, res){
             data: updateUser,
             message: "Product updated!"
         })
-    } catch (error) {
-        res.status(400).send(error.message)
+    } catch (err) {
+        if(err.statusCode){
+            res.status(err.statusCode).send(err.message); return;
+        }
+        res.status(400).send(err.message)
     }
 }
 
@@ -110,8 +121,11 @@ async function deleteUserById(req, res){
         res.status(200).send({
             message: "User & Profile has deleted"
         })
-    } catch (error) {
-        res.status(400).send(error.message)
+    } catch (err) {
+        if(err.statusCode){
+            res.status(err.statusCode).send(err.message); return;
+        }
+        res.status(400).send(err.message)
     }
 }
 
