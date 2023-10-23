@@ -2,18 +2,16 @@ const express = require('express')
 const router = express.Router();
 
 const userService = require('./user.service');
-const checkToken = require('../middleware/checkToken');
+
 
 //get all users info
-router.get('/', async(req, res)=>{
+async function getAllUsers(req, res){
     const users = await userService.getUsers();
-    res.status(200).json(users)
-})
+    res.status(200).json(users);
+}
 
-
-//TODO: #############
 //register user
-router.post('/auth/register', async(req, res)=>{
+async function registerUser(req, res){
     try {
         const user = await userService.registerUser(req.body);
         res.status(200).send({
@@ -27,11 +25,10 @@ router.post('/auth/register', async(req, res)=>{
         }
         res.status(400).send(err.message)
     }
-})
+}
 
-//TODO: #############
 //login user, return token
-router.post('/auth/login', async(req, res)=>{
+async function loginUser(req, res){
     try {
         const loggedIn = await userService.loginUser(req.body)
         console.log(loggedIn)
@@ -39,13 +36,12 @@ router.post('/auth/login', async(req, res)=>{
             data: loggedIn
         })
     } catch (err) {
-        res.status(403).send( err.stack )
-      
+        res.status(403).send( err.message )
     }
-})
+}
 
 //user authenticated
-router.get('/auth/authenticate', checkToken, async(req, res)=>{
+async function userAuthenticated(req, res){
     try {
         const userId = +res.user.id
         if(typeof userId !== 'number'){
@@ -69,10 +65,10 @@ router.get('/auth/authenticate', checkToken, async(req, res)=>{
         }
         
     }
-})
+}
 
 //update user, profile by id
-router.put('/:id', async(req, res)=>{
+async function updateUserById(req, res){
     try {
         const userId = +req.params.id
         const { name, email, password, identity_type, identity_number, address } = req.body;
@@ -91,10 +87,10 @@ router.put('/:id', async(req, res)=>{
     } catch (error) {
         res.status(400).send(error.message)
     }
-})
+}
 
 //patch user and profile by id
-router.patch('/:id', async(req, res)=>{
+async function patchUserById(req, res){
     try {
         const userId = +req.params.id;
         const updateUser = await userService.updateUserById(userId, req.body);
@@ -105,10 +101,10 @@ router.patch('/:id', async(req, res)=>{
     } catch (error) {
         res.status(400).send(error.message)
     }
-})
+}
 
 //delete user, and profile by id
-router.delete('/:id', async(req, res)=>{
+async function deleteUserById(req, res){
     try {
         const userId = +req.params.id;
         await userService.deleteUserById(userId)
@@ -118,6 +114,14 @@ router.delete('/:id', async(req, res)=>{
     } catch (error) {
         res.status(400).send(error.message)
     }
-})
+}
 
-module.exports = router;
+module.exports = {
+    getAllUsers, 
+    registerUser,
+    loginUser,
+    userAuthenticated,
+    updateUserById,
+    patchUserById,
+    deleteUserById,
+};
