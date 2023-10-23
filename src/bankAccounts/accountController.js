@@ -34,8 +34,11 @@ async function getAccountById(req, res){
                     message: "Fetch account data success"
                 })
             }
-    } catch (error) {
-        res.status(400).send(error.message)
+    } catch (err) {
+        if(err.statusCode){
+            res.status(err.statusCode).send(err.message); return;
+        }
+        res.status(400).send(err.message)
     }
 }
 
