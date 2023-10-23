@@ -1,13 +1,10 @@
-const express = require('express');
-const router = express.Router();
-
 const accRepos = require('../bankAccounts/account.repository')
 
 const tranService = require('./transaction.service');
 const userService = require('../users/user.service');
 
 //create transaction
-router.post('/', async(req, res)=>{
+async function createTransaction(req, res){
     try {
         const {source_account_id, destination_account_id, amount } = req.body;
         const senderId = parseInt(source_account_id), recipientId = parseInt(destination_account_id);
@@ -32,10 +29,10 @@ router.post('/', async(req, res)=>{
     } catch (error) {
         res.status(400).send(error.message)
     }
-})
+}
 
 //get all transactions info
-router.get('/', async(req, res)=>{
+async function getAllTransactions(req, res){
     try {
         const transactions = await tranService.getAllTransactions()
         
@@ -53,9 +50,9 @@ router.get('/', async(req, res)=>{
     } catch (error) {
         res.status(400).send(error.message)
     }
-})
+}
 
-router.get('/:transactionId', async(req, res)=>{
+async function getTransactionById(req, res){
     try {
     const transactionId = +req.params.transactionId;
 
@@ -109,9 +106,9 @@ router.get('/:transactionId', async(req, res)=>{
             res.status(400).send(error.message)
         }
     }
-})
+}
 
-router.delete('/:transactionId', async(req, res) => {
+async function deleteTransactionById(req, res){
     try {
         const transactionId = +req.params.transactionId;
 
@@ -120,10 +117,9 @@ router.delete('/:transactionId', async(req, res) => {
         }
         
         await tranService.deleteTransactionById(transactionId);
-
-            res.status(200).json({
-                message: "Transaction deleted"
-            })
+        res.status(200).json({
+            message: "Transaction deleted"
+        })
         
     } catch (err) {
         if(err.statusCode === 404) { //not found
@@ -132,5 +128,11 @@ router.delete('/:transactionId', async(req, res) => {
             res.status(400).json( { error: err.message } )
         }
     }
-})
-module.exports = router
+}
+
+module.exports = {
+    createTransaction,
+    getAllTransactions,
+    getTransactionById,
+    deleteTransactionById,
+}

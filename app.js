@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const routerUser = require('./src/users/userController');
 const routerAccounts = require('./src/routes/bankAccount.routes');
-const routerTransactions = require('./src/transactions/transactionController')
+const routerTransactions = require('./src/routes/transaction.routes')
 
 const swaggerUi = require('swagger-ui-express')
 const swaggerJson = require('./openApi.json')
