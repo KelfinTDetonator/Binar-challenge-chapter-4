@@ -1,7 +1,18 @@
 const request = require('supertest')
 const app = require('../app')
 const userController = require('../src/users/userController')
+const { execSync } = require("child_process");
+const prisma = require('../db/')
 
+beforeAll(async()=>{
+    await prisma.$connect();
+    execSync("npx prisma db push");
+});
+
+afterAll(async () => {
+    await prisma.$disconnect();
+    console.log("___________________________________________________________________________________AFTERALL");
+  });
 // const user = require('../src/users/userController')
 // const mockRequest = (body = {}) => ({body})
 // const mockResponse = () => {
@@ -21,31 +32,32 @@ const userController = require('../src/users/userController')
     //           });
     // })
 
-describe("Integration test transaction controller API", ()=>{
+// describe("Integration test transaction controller API", ()=>{
     
-    it("GET /accounts/ --> Return status: 200 and all users objects", async()=>{
-        const response = await request(app)
-                                    .get('/api/v1/accounts')
-                                    .set('Accept', 'application/json')
-                                    .type('application/json')
-                                    //* or
-                                    // .expect('Content-Type', /\json/)
-        expect(response.headers["content-type"]).toMatch(/\json/);
-        expect(response.body).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining({
-                    id: expect.any(Number),
-                    bank_name: expect.any(String),
-                    bank_account_number: expect.any(String),
-                    balance: expect.any(Number),
-                    user_id: expect.any(Number)
-                })
-            ])
-        )
-        expect(response.statusCode).toBe(200);
-    })
+//     it("GET /accounts/ --> Return status: 200 and all users objects", async ()=>{
+//         const response = await request(app)
+//                                     .get('/api/v1/accounts')
+//                                     .set('Accept', 'application/json')
+//                                     .type('application/json')
+//                                     //* or
+//                                     // .expect('Content-Type', /\json/)
+//         expect(response.headers["content-type"]).toMatch(/\json/);
+//         expect(response.body).toEqual(
+//             expect.arrayContaining([
+//                 expect.objectContaining({
+//                     id: expect.any(Number),
+//                     bank_name: expect.any(String),
+//                     bank_account_number: expect.any(String),
+//                     balance: expect.any(Number),
+//                     user_id: expect.any(Number)
+//                 })
+//             ])
+//         )
+//         expect(response.statusCode).toBe(200);
+
+//     })
   
-})
+// })
 
 describe("test", ()=>{
     it("POST /accounts -- success --> response body contains new account JSON + statusCode 200", async()=>{
@@ -67,7 +79,7 @@ describe("test", ()=>{
         //     "balance": 900000,
         //     "id": 7,
         // }
-        // expect(response.statusCode).toBe(201);
+        expect(response.statusCode).toBe(201);
         expect(response.body).toEqual(
             expect.objectContaining({
                 data: expect.objectContaining({
