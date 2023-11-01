@@ -39,7 +39,7 @@ async function loginUser(req, res){
         const loggedIn = await userService.loginUser(req.body)
         console.log(loggedIn)
         res.status(200).json({
-            data: loggedIn
+            Token: `Bearer ${loggedIn}`
         })
     } catch (err) {
         res.status(403).send( err.message )
