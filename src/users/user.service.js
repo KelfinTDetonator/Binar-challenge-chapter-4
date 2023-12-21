@@ -1,8 +1,7 @@
-const { json } = require('express');
+require('dotenv').config();
 const userRepos = require('./user.repository');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
-require('dotenv').config()
+const jwt = require('jsonwebtoken');
 
 const genHashCrypt = async(password)=>{
     const salt = await bcrypt.genSalt();
