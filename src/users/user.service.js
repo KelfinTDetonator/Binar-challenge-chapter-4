@@ -28,6 +28,22 @@ async function registerUser(reqBody){
     return user;
 }
 
+async function loginUser(reqBody){
+    const {email, password} = reqBody
+    const user = await userRepos.findUserByEmail(email)
+    // console.log( user, password)
+    if(!user){
+        throw new CustomError("Email or password may be incorrect", 401)
+    }
+    if(bcrypt.compareSync(password, user.password)){
+                                            //if key exist in env     //if not exist
+        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY || 'secret_key', { expiresIn: '6h'});
+        return token;
+    } else{
+        throw new CustomError({ error: "Invalid credential" }, 403)
+    }
+   
+}
 async function getUsers(){
     const users = await userRepos.findUsers();
     if(!users){
@@ -54,24 +70,6 @@ async function deleteUserById(id){
     const deleted = await userRepos.deleteUserProfile(id);
     return deleted
 }
-
-async function loginUser(reqBody){
-    const {email, password} = reqBody
-    const user = await userRepos.findUserByEmail(email)
-    // console.log( user, password)
-    if(!user){
-        throw new CustomError("Email or password may be incorrect", 401)
-    }
-    if(bcrypt.compareSync(password, user.password)){
-                                            //if key exist in env     //if not exist
-        const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY || 'secret_key', { expiresIn: '6h'});
-        return token;
-    } else{
-        throw new CustomError({ error: "Invalid credential" }, 403)
-    }
-   
-}
-
 
 module.exports = {
     registerUser,
