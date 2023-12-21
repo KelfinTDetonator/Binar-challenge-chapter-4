@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "prisma generate",
-    "build": "npx prisma migrate dev",
+    "build": "npx prisma db push",
     "test": "dotenv -e .env.dev -- jest -i",
     "test:watch": "jest --watch",
     "start": "node index.js",
