@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "BEJS Chapter 5 challenge",
+    "title": "Simple Banking System",
     "version": "1.0.11"
   },
   "externalDocs": {
@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://localhost:2001/api/v1/"
+      "url": "https://crud-basic-banking-system.vercel.app/api/v1"
     }
   ],
   "tags": [

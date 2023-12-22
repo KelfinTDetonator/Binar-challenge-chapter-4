@@ -5,6 +5,7 @@ const routerUser = require('./src/routes/users.routes');
 const routerAccounts = require('./src/routes/bankAccount.routes');
 const routerTransactions = require('./src/routes/transaction.routes');
 
+const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 const swaggerUi = require('swagger-ui-express')
 const swaggerJson = require('./openApi.json')
 const bodyParser = require('body-parser');
@@ -16,7 +17,7 @@ app.use(express.json({strict: false}));
 app.use(morgan('dev'))
 
 app.use('/images', express.static('./public/images'))
-app.use("/api/v1/documentation", swaggerUi.serve, swaggerUi.setup(swaggerJson))
+app.use("/api/v1/documentation", swaggerUi.serve, swaggerUi.setup(swaggerJson, { customCssUrl: CSS_URL }))
 
 app.use('/api/v1/users', routerUser);
 app.use('/api/v1/accounts', routerAccounts);
