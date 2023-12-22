@@ -5,7 +5,7 @@ const routerUser = require('./src/routes/users.routes');
 const routerAccounts = require('./src/routes/bankAccount.routes');
 const routerTransactions = require('./src/routes/transaction.routes');
 
-const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css";
 const swaggerUi = require('swagger-ui-express')
 const swaggerJson = require('./openApi.json')
 const bodyParser = require('body-parser');
